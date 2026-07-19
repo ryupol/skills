@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitLab API"
+  short_description: "CRUD helpers for GitLab projects and MRs"
+  default_prompt: "Use $gitlab-api to create merge requests or manage GitLab resources."
