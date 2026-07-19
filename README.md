@@ -1,4 +1,4 @@
-# ryu-ai-skills
+# ryupol-skills
 
 Public, user-level instructions and skills shared across Claude Code, Codex, Pi,
 OpenCode, Cursor, and harnesses using `~/.agents/skills`.
