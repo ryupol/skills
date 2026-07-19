@@ -4,7 +4,118 @@ Personal agent skills I use across Codex, Claude Code, Cursor, Pi, and other
 agent harnesses. Some skills are original; some are copied or adapted from
 others for my own workflow.
 
-## Structure
+## Quick Start
+
+Use the interactive installer for normal setup:
+
+```bash
+npx skills@latest add ryupol/skills
+```
+
+Then choose:
+
+- skills to install
+- agent harnesses to install into
+- copy or symlink mode
+
+For a new project, install the skills your agent needs, then start a fresh
+agent session in that project. To add more skills later, rerun the same command
+and select only the extra skills.
+
+## Install Choices
+
+Same installer handles full setup and selected-skill installs. Only options
+change.
+
+| Goal | Recommended command | What it does |
+| --- | --- | --- |
+| Choose in prompts | `npx skills@latest add ryupol/skills` | Opens interactive selection. |
+| Install everything | `npx skills@latest add ryupol/skills -g --all` | Installs all skills globally for supported agents. |
+| Install specific skills only | `npx skills@latest add ryupol/skills -g --skill gitlab-api atlassian-api` | Installs only named skills. |
+| Install for specific agents only | `npx skills@latest add ryupol/skills -g --agent codex claude-code` | Targets only selected agent harnesses. |
+| Copy instead of symlink | `npx skills@latest add ryupol/skills -g --copy` | Copies files into target directories. |
+| List available skills | `npx skills@latest add ryupol/skills --list` | Shows skills without installing. |
+
+Use `npx skills@latest add` for normal install. Use local dev setup only when
+working from this cloned repo.
+
+Note: `npx skills@latest add` uses `--agent`; `scripts/setup.sh` uses
+`--target` because it selects local symlink targets.
+
+## Local Dev Setup
+
+Local dev setup symlinks this repo into local harness directories. Changes in
+this repo take effect without reinstalling.
+
+Choose targets interactively:
+
+```bash
+bash scripts/setup.sh --interactive
+```
+
+Link every supported local target:
+
+```bash
+bash scripts/setup.sh --all
+```
+
+Link only selected local targets:
+
+```bash
+bash scripts/setup.sh --target codex claude-code
+```
+
+List supported local targets:
+
+```bash
+bash scripts/setup.sh --list-targets
+```
+
+`bash scripts/setup.sh` still defaults to `--all` for backward compatibility.
+For general install outside local repo development, prefer
+`npx skills@latest add ryupol/skills`.
+
+Setup aborts if a real file or directory already exists at a managed target.
+Move or back up the reported path, then rerun.
+
+## Local Targets
+
+`setup.sh` can link these targets:
+
+| Target | Links |
+| --- | --- |
+| `codex` | `~/.agents/skills`, `~/.agents/agents`, `~/.agents/AGENTS.md`, `~/.codex/AGENTS.md` |
+| `claude-code` | `~/.claude/skills`, `~/.claude/agents`, `~/.claude/CLAUDE.md` |
+| `cursor` | `~/.cursor/skills`, `~/.cursor/agents`, `~/.cursor/rules/agent-instructions.mdc` |
+| `pi` | `~/.pi/skills`, `~/.pi/agent/AGENTS.md` |
+| `opencode` | `~/.agents/skills`, `~/.config/opencode/AGENTS.md` |
+
+Codex and OpenCode share `~/.agents/skills`. Claude Code, Cursor, and Pi use
+their native skill paths.
+
+Setup never replaces harness root directories, settings, authentication,
+sessions, plugins, or caches.
+
+## Verify
+
+Check only targets you selected:
+
+```bash
+readlink ~/.agents/skills
+readlink ~/.claude/skills
+readlink ~/.cursor/skills
+readlink ~/.pi/skills
+readlink ~/.agents/agents
+readlink ~/.claude/agents
+readlink ~/.cursor/agents
+readlink ~/.codex/AGENTS.md
+find skills -maxdepth 2 -name SKILL.md -print
+```
+
+Start fresh harness session after setup. Ask it to list available skills and
+summarize active personal instructions.
+
+## Repo Layout
 
 ```text
 skills/
@@ -21,98 +132,11 @@ skills/
     └── setup.sh                    # local dev symlink wiring
 ```
 
-Harnesses expect a flat `<skill-name>/SKILL.md` view; `skills/` is that view
-directly — no separate source directory, no symlink indirection per skill.
-`agents/` is the equivalent flat view for subagents reused across skills.
+Harnesses expect a flat `<skill-name>/SKILL.md` view. `skills/` is that view
+directly: no separate source directory, no symlink indirection per skill.
+`agents/` is the equivalent flat view for shared subagents.
 
-No top-level `commands/` directory anywhere in repo — commands become
-skills. See [Commands and subagents](#commands-and-subagents) below.
-
-## Install
-
-Use the skills.sh installer for normal install. It shows a TUI for selecting
-skills, target agents, and copy vs symlink:
-
-```bash
-npx skills@latest add ryupol/skills
-```
-
-Repository: https://github.com/ryupol/skills
-
-Useful non-interactive forms:
-
-```bash
-npx skills@latest add ryupol/skills --list
-npx skills@latest add ryupol/skills -g --agent codex claude-code
-npx skills@latest add ryupol/skills -g --skill gitlab-api atlassian-api
-npx skills@latest add ryupol/skills -g --copy
-npx skills@latest add ryupol/skills -g --all
-```
-
-## Local Dev Setup
-
-```bash
-bash scripts/setup.sh
-```
-
-Script accepts no arguments. Use this for personal local development when you
-want whole-directory symlinks into every local harness. For general install,
-prefer `npx skills@latest add`.
-
-Local setup links:
-
-```text
-~/.agents/skills                     -> repo/skills
-~/.claude/skills                    -> repo/skills
-~/.cursor/skills                    -> repo/skills
-~/.pi/skills                        -> repo/skills
-~/.agents/agents                    -> repo/agents
-~/.claude/agents                    -> repo/agents
-~/.cursor/agents                    -> repo/agents
-~/.agents/AGENTS.md                 -> repo/AGENTS.md
-~/.codex/AGENTS.md                  -> repo/AGENTS.md
-~/.claude/CLAUDE.md                 -> repo/AGENTS.md
-~/.pi/agent/AGENTS.md               -> repo/AGENTS.md
-~/.config/opencode/AGENTS.md        -> repo/AGENTS.md
-~/.cursor/rules/ryu-ai-skills.mdc   -> repo/AGENTS.md
-```
-
-Codex and OpenCode read `~/.agents/skills`; Claude Code, Cursor, and Pi use
-their native skill paths. Setup never replaces harness root directories,
-settings, authentication, sessions, plugins, or caches.
-
-If real file or directory already occupies managed target, setup aborts before
-changing links. Move or back up reported path manually, then rerun.
-
-## List Skills
-
-```bash
-bash scripts/list-skills.sh
-```
-
-## Add Skill
-
-```bash
-mkdir -p skills/example-skill
-# Create skills/example-skill/SKILL.md
-```
-
-Commit directory directly. Skill name must match `name` in `SKILL.md`
-frontmatter. All skill names must be unique in `skills/`.
-
-## Add Agent
-
-```bash
-mkdir -p agents
-# Create agents/example-subagent.md
-```
-
-Commit file (or directory, if subagent needs support files) directly under
-`agents/`. Use top-level `agents/` when subagent is reusable across more than
-one skill. If subagent is specific to a single skill, nest it instead under
-`skills/<skill-name>/agents/<subagent>.md`.
-
-## Commands and subagents
+## Commands And Subagents
 
 No top-level `commands/` directory. Commands become skills; `agents/` stays
 a real top-level directory since subagents are often shared across skills.
@@ -126,24 +150,3 @@ fallback for harnesses without subagent support.
 entry. Mark it explicit-trigger-only in `SKILL.md` frontmatter: state the
 skill has no proactive/auto trigger and only fires when invoked by name
 (`/skill-name`). That reproduces command behavior using the skill mechanism.
-
-## Verify
-
-```bash
-readlink ~/.agents/skills
-readlink ~/.claude/skills
-readlink ~/.cursor/skills
-readlink ~/.pi/skills
-readlink ~/.agents/agents
-readlink ~/.claude/agents
-readlink ~/.cursor/agents
-readlink ~/.codex/AGENTS.md
-find skills -maxdepth 2 -name SKILL.md -print
-```
-
-Start fresh harness session after initial setup. Ask it to list available skills
-and summarize active personal instructions.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
