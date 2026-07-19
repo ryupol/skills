@@ -1,7 +1,8 @@
 # ryupol-skills
 
-Public, user-level instructions and skills shared across Claude Code, Codex, Pi,
-OpenCode, Cursor, and harnesses using `~/.agents/skills`.
+Personal agent skills I use across Codex, Claude Code, Cursor, Pi, and other
+agent harnesses. Some skills are original; some are copied or adapted from
+others for my own workflow.
 
 ## Structure
 
@@ -33,19 +34,19 @@ Use the skills.sh installer for normal install. It shows a TUI for selecting
 skills, target agents, and copy vs symlink:
 
 ```bash
-npx skills@latest add <github-owner>/ryu-skills
+npx skills@latest add ryupol/skills
 ```
 
-Replace `<github-owner>` with the real GitHub owner after publishing this repo.
+Repository: https://github.com/ryupol/skills
 
 Useful non-interactive forms:
 
 ```bash
-npx skills@latest add <github-owner>/ryu-skills --list
-npx skills@latest add <github-owner>/ryu-skills -g --agent codex claude-code
-npx skills@latest add <github-owner>/ryu-skills -g --skill gitlab-api atlassian-api
-npx skills@latest add <github-owner>/ryu-skills -g --copy
-npx skills@latest add <github-owner>/ryu-skills -g --all
+npx skills@latest add ryupol/skills --list
+npx skills@latest add ryupol/skills -g --agent codex claude-code
+npx skills@latest add ryupol/skills -g --skill gitlab-api atlassian-api
+npx skills@latest add ryupol/skills -g --copy
+npx skills@latest add ryupol/skills -g --all
 ```
 
 ## Local Dev Setup
@@ -74,7 +75,6 @@ Local setup links:
 ~/.pi/agent/AGENTS.md               -> repo/AGENTS.md
 ~/.config/opencode/AGENTS.md        -> repo/AGENTS.md
 ~/.cursor/rules/ryu-ai-skills.mdc   -> repo/AGENTS.md
-~/.local/bin/cy                     -> repo/scripts/cy
 ```
 
 Codex and OpenCode read `~/.agents/skills`; Claude Code, Cursor, and Pi use
@@ -144,10 +144,6 @@ find skills -maxdepth 2 -name SKILL.md -print
 Start fresh harness session after initial setup. Ask it to list available skills
 and summarize active personal instructions.
 
-`cy` starts a new Codex session with approval prompts and sandboxing disabled.
-Use only where unrestricted local execution is intended:
+## License
 
-```bash
-cy
-cy -C /path/to/project
-```
+MIT. See [LICENSE](LICENSE).

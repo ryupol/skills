@@ -24,7 +24,6 @@ sources=(
   "$REPO/AGENTS.md"
   "$REPO/AGENTS.md"
   "$REPO/AGENTS.md"
-  "$REPO/scripts/cy"
 )
 
 targets=(
@@ -41,7 +40,6 @@ targets=(
   "$HOME/.pi/agent/AGENTS.md"
   "$HOME/.config/opencode/AGENTS.md"
   "$HOME/.cursor/rules/ryu-ai-skills.mdc"
-  "$HOME/.local/bin/cy"
 )
 
 conflicts=0
